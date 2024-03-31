@@ -1,6 +1,6 @@
-# kafka in docker
+# Kafka in Docker
 
-## Quick Start
+## Quick start
 
 Boot the stack:
 
@@ -20,7 +20,7 @@ Tail the consumer logs:
 docker logs -f consumer
 ```
 
-## Other Examples
+## Other examples
 
 List:
 
@@ -82,4 +82,5 @@ kafka-run-class kafka.tools.GetOffsetShell --bootstrap-server "$BOOTSTRAP_SERVER
 ```
 
 ## Resources
-- https://github.com/edenhill/kcat#examples
+
+- <https://github.com/edenhill/kcat#examples>
