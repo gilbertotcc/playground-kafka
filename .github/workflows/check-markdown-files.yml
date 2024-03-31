@@ -1,0 +1,47 @@
+name: Check Markdown files
+
+on:
+  pull_request:
+    paths:
+    - '**.md'
+    - '.github/workflows/check-markdown-files.yml'
+  push:
+    branches:
+    - 'main'
+    paths:
+    - '**.md'
+    - '.github/workflows/check-markdown-files.yml'
+
+jobs:
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Lint Markdown sources
+      uses: avto-dev/markdown-lint@v1.4.0
+      with:
+        config: '.markdownlint.json'
+        args: './'
+
+  vale:
+    name: Lint prose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: errata-ai/vale-action@reviewdog
+        with:
+          fail_on_error: true
+
+  check-urls:
+    name: Check URLs
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: urls-checker
+      uses: urlstechie/urlchecker-action@0.0.34
+      with:
+        file_types: .md
+        print_all: false
