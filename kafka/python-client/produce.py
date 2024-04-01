@@ -1,4 +1,3 @@
-# https://kafka-python.readthedocs.io/en/master/#kafkaproducer
 import json
 import uuid
 import os
@@ -6,11 +5,13 @@ import time
 import random
 from faker import Faker
 from kafka import KafkaProducer
+from kafka.errors import KafkaError
 
 fake = Faker()
 
 TOPIC = os.environ.get('TOPIC', 'foobar')
 BOOTSTRAP_SERVERS = os.environ.get('BOOTSTRAP_SERVERS', 'localhost:9091,localhost:9092,localhost:9093').split(',')
+
 
 def create_transaction(counter):
     message = {
@@ -25,11 +26,18 @@ def create_transaction(counter):
     }
     return message
 
+
+def sync_send(producer: KafkaProducer, json_message):
+    future = producer.send(TOPIC, json_message)
+    future.get(timeout=5)
+
+
 def setup_producer():
     try:
         producer = KafkaProducer(
             bootstrap_servers=BOOTSTRAP_SERVERS,
-            value_serializer=lambda v: json.dumps(v).encode('utf-8')
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+            acks='all'
         )
         return producer
     except Exception as e:
@@ -37,8 +45,9 @@ def setup_producer():
             print('waiting for brokers to become available')
         return 'not-ready'
 
+
 print('setting up producer, checking if brokers are available')
-producer='not-ready'
+producer = 'not-ready'
 
 while producer == 'not-ready':
     print('brokers not available yet')
@@ -51,8 +60,13 @@ counter = 0
 while True:
     counter = counter + 1
     json_message = create_transaction(counter)
-    producer.send(TOPIC, json_message)
-    print('message sent to kafka with squence id of {}'.format(counter))
+    while True: # Ugly code to emulate do while loop
+        try:
+            sync_send(producer, json_message)
+            print('Message sent to Kafka with sequence id of {}'.format(counter))
+            break
+        except KafkaError as error:
+            print("Couldn't send message to Kafka with sequence id of {}. Error: {}".format(counter, error))
     time.sleep(2)
 
-producer.close()
+# producer.close() Code is not reachable
