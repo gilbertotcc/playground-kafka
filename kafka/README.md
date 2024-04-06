@@ -48,7 +48,7 @@ Exec the shell:
 
 ```bash
 docker exec -it kafka-shell bash
-export BOOTSTRAP_SERVER="kafka1:9091,kafka2:9092,kafka3:9093"
+export BOOTSTRAP_SERVERS="broker-1:29091,broker-2:29092,broker-3:29093"
 ```
 
 List topics:

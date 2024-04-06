@@ -143,19 +143,20 @@ services:
       options:
         max-size: "1m"
   
-  # kafka-shell:
-  #   image: confluentinc/cp-kafka:${CONFLUENT_PLATFORM_VERSION:-7.4.0}
-  #   container_name: kafka-shell
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - zookeeper
-  #     - broker-1
-  #     - broker-2
-  #     - broker-3
-  #   entrypoint: ""
-  #   command: "sleep 10000000"
-  #   networks:
-  #     - kafka
+  kafka-shell:
+    platform: linux/amd64
+    image: confluentinc/cp-kafka:${CONFLUENT_PLATFORM_VERSION:-7.4.0}
+    container_name: kafka-shell
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+      - broker-1
+      - broker-2
+      - broker-3
+    entrypoint: ""
+    command: "sleep 10000000"
+    networks:
+      - kafka
 
   producer:
     platform: linux/amd64
