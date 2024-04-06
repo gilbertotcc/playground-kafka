@@ -1,6 +1,15 @@
+---
 version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "17:00"
+  - package-ecosystem: "pip"
+    directory: "/kafka/python-client"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "17:00"
